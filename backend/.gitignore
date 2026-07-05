@@ -1,0 +1,5 @@
+// Ignore uploaded files and temp data
+uploads/*
+!uploads/.gitkeep
+node_modules/
+.env

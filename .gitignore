@@ -1,0 +1,30 @@
+# Global ignores
+.env
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Mac & Windows OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.idea/
+.vscode/
+
+# Backend specific
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/logs/
+
+# Frontend specific (Angular)
+frontend/dist/
+frontend/tmp/
+frontend/out-tsc/
+frontend/bazel-out/
+frontend/.angular/cache/
+frontend/coverage/
+
+# Misc
+*.log
