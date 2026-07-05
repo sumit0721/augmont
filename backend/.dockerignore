@@ -1,0 +1,17 @@
+# Files and folders to EXCLUDE from the Docker image
+# This keeps the image small and prevents sensitive data leaks
+
+node_modules
+npm-debug.log
+.env
+.env.production
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+tests
+jest.config.js
+test.js
+force-seed.js
+alter-table.js
+*.md

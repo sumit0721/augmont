@@ -1,0 +1,80 @@
+# ──────────────────────────────────────────────────────────────
+# Docker Compose — Orchestrates ALL containers together
+# ──────────────────────────────────────────────────────────────
+# WHAT THIS DOES:
+#   Defines 3 services that run together as a unit:
+#   1. db       — PostgreSQL 15 database
+#   2. backend  — Your Node.js/Express API server
+#   3. frontend — Your Angular app served by Nginx (backup for Vercel)
+#
+# HOW THEY TALK TO EACH OTHER:
+#   Docker Compose creates a private network. Inside this network,
+#   each service can reach others by their service NAME.
+#   So the backend connects to PostgreSQL using host "db" (not "localhost").
+#
+# VOLUMES:
+#   pgdata volume persists your database even if the container is destroyed.
+#   Without this, you'd lose all your data every time you restart!
+# ──────────────────────────────────────────────────────────────
+
+services:
+  # ── PostgreSQL Database ─────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: augmont-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres123}
+      POSTGRES_DB: ${DB_NAME:-augmont_crud}
+    ports:
+      - "5433:5432"   # Map to 5433 on host to avoid conflict with SpenSense's PostgreSQL
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Node.js Backend API ─────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: augmont-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: db               # ← Points to the "db" service above (Docker internal DNS)
+      DB_PORT: 5432             # ← Inside Docker network, PostgreSQL always listens on 5432
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres123}
+      DB_NAME: ${DB_NAME:-augmont_crud}
+      JWT_SECRET: ${JWT_SECRET:-augmont_super_secret_key_2024}
+      JWT_EXPIRES_IN: 24h
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - backend-uploads:/app/uploads
+
+  # ── Angular Frontend (Docker backup — primary is Vercel) ────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: augmont-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"               # Map Nginx port 80 → host port 4200
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:                       # Persistent storage for PostgreSQL data
+  backend-uploads:              # Persistent storage for uploaded product images
