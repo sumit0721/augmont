@@ -18,7 +18,7 @@ on:
 jobs:
   # ── Job 1: Test the Backend ──────────────────────────────────
   test-backend:
-    name: 🧪 Backend Tests
+    name: Backend Tests
     runs-on: ubuntu-latest
 
     services:
@@ -37,21 +37,21 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
 
-      - name: 📥 Install backend dependencies
+      - name: Install backend dependencies
         working-directory: backend
         run: npm ci
 
-      - name: 🧪 Run backend tests
+      - name: Run backend tests
         working-directory: backend
         env:
           NODE_ENV: test
@@ -68,57 +68,57 @@ jobs:
 
   # ── Job 2: Build the Frontend ────────────────────────────────
   build-frontend:
-    name: 🏗️ Frontend Build
+    name: Frontend Build
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: 📥 Install frontend dependencies
+      - name: Install frontend dependencies
         working-directory: frontend
         run: npm ci
 
-      - name: 🏗️ Build Angular app
+      - name: Build Angular app
         working-directory: frontend
         run: npx ng build --configuration=production
 
   # ── Job 3: Deploy to EC2 ─────────────────────────────────────
   deploy:
-    name: 🚀 Deploy to EC2
+    name: Deploy to EC2
     needs: [test-backend, build-frontend]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - name: 🔐 Deploy via SSH
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "📥 Navigating to project directory..."
-            cd ~/augmont-sumit
+            echo "Navigating to project directory..."
+            cd ~/augmont
 
-            echo "📥 Pulling latest code from GitHub..."
+            echo "Pulling latest code from GitHub..."
             git pull origin main
 
-            echo "🐳 Building Docker images on EC2..."
-            docker compose build --no-cache
+            echo "Building Docker images on EC2..."
+            sudo docker compose build --no-cache
 
-            echo "🚀 Restarting containers..."
-            docker compose up -d
+            echo "Restarting containers..."
+            sudo docker compose up -d
 
-            echo "🧹 Cleaning up old Docker images..."
-            docker image prune -f
+            echo "Cleaning up old Docker images..."
+            sudo docker image prune -f
 
-            echo "✅ Deployment complete!"
-            docker compose ps
+            echo "Deployment complete!"
+            sudo docker compose ps
