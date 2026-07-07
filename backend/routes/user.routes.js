@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controller');
-const { requireAuth } = require('../middleware/auth.middleware');
+const authMiddleware = require('../middleware/auth.middleware');
 
 // All user routes require authentication
-router.use(requireAuth);
+router.use(authMiddleware);
 
 router.get('/', userController.getAllUsers);
 router.get('/:id', userController.getUserById);

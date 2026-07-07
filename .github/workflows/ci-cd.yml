@@ -1,20 +1,13 @@
 # ──────────────────────────────────────────────────────────────
-# GitHub Actions — Continuous Integration (CI)
+# GitHub Actions — CI/CD Pipeline
 # ──────────────────────────────────────────────────────────────
 # WHAT THIS DOES:
-#   Every time you push code to the "main" branch (or open a PR),
-#   GitHub automatically:
-#   1. Spins up a fresh Ubuntu virtual machine
-#   2. Installs Node.js
-#   3. Runs your backend tests
-#   4. Builds the Angular frontend (catches TypeScript errors)
-#
-# WHY?
-#   This catches bugs BEFORE they reach production.
-#   If tests fail, the CD pipeline won't deploy broken code.
+#   1. Runs backend tests on push to main
+#   2. Builds frontend to catch compile errors
+#   3. If tests and build pass, deploys to EC2 via SSH
 # ──────────────────────────────────────────────────────────────
 
-name: CI — Test & Build
+name: CI/CD Pipeline
 
 on:
   push:
@@ -28,7 +21,6 @@ jobs:
     name: 🧪 Backend Tests
     runs-on: ubuntu-latest
 
-    # Spin up a PostgreSQL container for tests
     services:
       postgres:
         image: postgres:15-alpine
@@ -97,3 +89,36 @@ jobs:
       - name: 🏗️ Build Angular app
         working-directory: frontend
         run: npx ng build --configuration=production
+
+  # ── Job 3: Deploy to EC2 ─────────────────────────────────────
+  deploy:
+    name: 🚀 Deploy to EC2
+    needs: [test-backend, build-frontend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: 🔐 Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "📥 Navigating to project directory..."
+            cd ~/augmont-sumit
+
+            echo "📥 Pulling latest code from GitHub..."
+            git pull origin main
+
+            echo "🐳 Building Docker images on EC2..."
+            docker compose build --no-cache
+
+            echo "🚀 Restarting containers..."
+            docker compose up -d
+
+            echo "🧹 Cleaning up old Docker images..."
+            docker image prune -f
+
+            echo "✅ Deployment complete!"
+            docker compose ps

@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
     <div class="metrics-grid">
       <div class="metric-card">
         <div class="metric-icon users">
-          <span>@</span>
+          <span>&#64;</span>
         </div>
         <div class="metric-info">
           <h3>Total Users</h3>
