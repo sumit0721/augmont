@@ -1,0 +1,151 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div class="dashboard-header">
+      <div>
+        <h2 class="section-title">Dashboard</h2>
+        <p class="section-subtitle">Overview of your store's performance</p>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon users">
+          <span>@</span>
+        </div>
+        <div class="metric-info">
+          <h3>Total Users</h3>
+          <p class="metric-value">6</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon categories">
+          <span>#</span>
+        </div>
+        <div class="metric-info">
+          <h3>Categories</h3>
+          <p class="metric-value">4</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon products">
+          <span>+</span>
+        </div>
+        <div class="metric-info">
+          <h3>Total Products</h3>
+          <p class="metric-value">30</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon stock">
+          <span>📦</span>
+        </div>
+        <div class="metric-info">
+          <h3>Total Stock</h3>
+          <p class="metric-value">1,452</p>
+        </div>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .dashboard-header {
+      margin-bottom: 2.5rem;
+    }
+    
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 0.25rem 0;
+      font-family: 'Playfair Display', serif; /* Elegant serif for titles */
+    }
+    
+    .section-subtitle {
+      color: #64748b;
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .metric-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      border: 1px solid #f1f5f9;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+      background-color: #d4af37;
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    }
+
+    .metric-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #d4af37;
+      background-color: rgba(212, 175, 55, 0.1);
+    }
+
+    .metric-info h3 {
+      margin: 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-info .metric-value {
+      margin: 0.25rem 0 0 0;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+  `]
+})
+export class DashboardComponent implements OnInit {
+  // In a real app, these would be fetched from the backend via a DashboardService
+  
+  constructor() {}
+  
+  ngOnInit(): void {
+  }
+}

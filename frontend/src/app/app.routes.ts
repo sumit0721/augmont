@@ -4,18 +4,26 @@ import { authGuard } from './core/guards/auth.guard';
 // Import components
 import { LoginComponent } from './features/auth/login.component';
 import { RegisterComponent } from './features/auth/register.component';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { CategoryListComponent } from './features/categories/category-list.component';
 import { CategoryFormComponent } from './features/categories/category-form.component';
 import { ProductListComponent } from './features/products/product-list.component';
 import { ProductFormComponent } from './features/products/product-form.component';
 import { BulkUploadComponent } from './features/products/bulk-upload.component';
+import { UserListComponent } from './features/users/user-list.component';
+import { UserFormComponent } from './features/users/user-form.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/products', pathMatch: 'full' },
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   
   // Protected Routes
+  { 
+    path: 'dashboard', 
+    component: DashboardComponent, 
+    canActivate: [authGuard] 
+  },
   { 
     path: 'categories', 
     component: CategoryListComponent, 
@@ -51,7 +59,22 @@ export const routes: Routes = [
     component: ProductFormComponent, 
     canActivate: [authGuard] 
   },
+  { 
+    path: 'users', 
+    component: UserListComponent, 
+    canActivate: [authGuard] 
+  },
+  { 
+    path: 'users/new', 
+    component: UserFormComponent, 
+    canActivate: [authGuard] 
+  },
+  { 
+    path: 'users/edit/:id', 
+    component: UserFormComponent, 
+    canActivate: [authGuard] 
+  },
   
   // Fallback
-  { path: '**', redirectTo: '/products' }
+  { path: '**', redirectTo: '/dashboard' }
 ];
