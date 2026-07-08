@@ -104,21 +104,12 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          command_timeout: 10m
           script: |
-            echo "Navigating to project directory..."
             cd ~/augmont
-
-            echo "Pulling latest code from GitHub..."
             git pull origin main
-
-            echo "Building Docker images on EC2..."
-            sudo docker compose build --no-cache
-
-            echo "Restarting containers..."
+            sudo docker compose down --remove-orphans
+            sudo docker compose build
             sudo docker compose up -d
-
-            echo "Cleaning up old Docker images..."
             sudo docker image prune -f
-
-            echo "Deployment complete!"
             sudo docker compose ps
