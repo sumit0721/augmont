@@ -37,10 +37,10 @@ services:
       timeout: 5s
       retries: 5
 
-  # ── Node.js Backend API + Angular Frontend ────────────────
+  # ── Node.js Backend API ─────────────────────────────────────
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: augmont-backend
     restart: unless-stopped

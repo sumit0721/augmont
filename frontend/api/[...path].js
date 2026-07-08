@@ -42,8 +42,14 @@ const handler = (req, res) => {
     res.status(502).json({ error: 'Backend unreachable', message: err.message });
   });
 
-  req.pipe(proxyReq);
+  if (req.body && Object.keys(req.body).length > 0) {
+    const bodyData = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+    proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+    proxyReq.write(bodyData);
+    proxyReq.end();
+  } else {
+    req.pipe(proxyReq);
+  }
 };
 
 module.exports = handler;
-module.exports.config = { api: { bodyParser: false } };
