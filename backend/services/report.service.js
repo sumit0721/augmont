@@ -49,6 +49,7 @@ const REPORT_SQL = `
     p.name,
     p.image,
     p.price,
+    p.stock,
     c.name AS "categoryName",
     p."createdAt"
   FROM products p
@@ -57,7 +58,7 @@ const REPORT_SQL = `
 `;
 
 // Column definitions shared by both formats
-const REPORT_COLUMNS = ['id', 'uniqueId', 'name', 'image', 'price', 'categoryName', 'createdAt'];
+const REPORT_COLUMNS = ['id', 'uniqueId', 'name', 'image', 'price', 'stock', 'categoryName', 'createdAt'];
 
 /**
  * Stream a CSV report directly to the HTTP response.
@@ -168,6 +169,7 @@ async function streamXLSXReport(res) {
       { header: 'Name', key: 'name', width: 30 },
       { header: 'Image', key: 'image', width: 40 },
       { header: 'Price', key: 'price', width: 12 },
+      { header: 'Stock', key: 'stock', width: 10 },
       { header: 'Category', key: 'categoryName', width: 20 },
       { header: 'Created At', key: 'createdAt', width: 24 }
     ];
