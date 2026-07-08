@@ -1,11 +1,13 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/frontend/browser",
   "rewrites": [
     {
       "source": "/api/:match*",
       "destination": "http://15.207.84.178:3000/api/:match*"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!assets/).*)",
       "destination": "/index.html"
     }
   ]
