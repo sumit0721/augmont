@@ -35,6 +35,9 @@ app.use(express.urlencoded({ extended: true }));
 // e.g., GET /uploads/1234-product.jpg → serves from the uploads/ directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Serve Angular frontend static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 // ─── Routes ──────────────────────────────────────────────────────
 
 app.use('/api/auth', authRoutes);
@@ -45,6 +48,11 @@ app.use('/api/users', userRoutes);
 // Health check endpoint — useful for deployment monitoring
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Catch-all route to serve Angular's index.html for non-API requests (SPA client-side routing)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // ─── Global Error Handler ────────────────────────────────────────
