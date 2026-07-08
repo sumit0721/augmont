@@ -22,11 +22,8 @@ const app = express();
 
 // ─── Middleware ───────────────────────────────────────────────────
 
-// CORS — allow the Angular dev server (port 4200) to make API requests
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
-  credentials: true
-}));
+// CORS — allow all origins since we use JWT token-based auth (not cookies)
+app.use(cors());
 
 // Parse JSON request bodies (for POST/PUT endpoints)
 app.use(express.json());
