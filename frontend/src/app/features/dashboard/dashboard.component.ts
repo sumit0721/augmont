@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { StatsService, DashboardStats } from '../../core/services/stats.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,14 +14,14 @@ import { CommonModule } from '@angular/common';
       </div>
     </div>
 
-    <div class="metrics-grid">
+    <div class="metrics-grid" *ngIf="!isLoading && stats">
       <div class="metric-card">
         <div class="metric-icon users">
           <span>&#64;</span>
         </div>
         <div class="metric-info">
           <h3>Total Users</h3>
-          <p class="metric-value">6</p>
+          <p class="metric-value">{{ stats.totalUsers }}</p>
         </div>
       </div>
 
@@ -30,7 +31,7 @@ import { CommonModule } from '@angular/common';
         </div>
         <div class="metric-info">
           <h3>Categories</h3>
-          <p class="metric-value">4</p>
+          <p class="metric-value">{{ stats.categories }}</p>
         </div>
       </div>
 
@@ -40,7 +41,7 @@ import { CommonModule } from '@angular/common';
         </div>
         <div class="metric-info">
           <h3>Total Products</h3>
-          <p class="metric-value">30</p>
+          <p class="metric-value">{{ stats.totalProducts }}</p>
         </div>
       </div>
 
@@ -50,9 +51,16 @@ import { CommonModule } from '@angular/common';
         </div>
         <div class="metric-info">
           <h3>Total Stock</h3>
-          <p class="metric-value">1,452</p>
+          <p class="metric-value">{{ stats.totalStock | number }}</p>
         </div>
       </div>
+    </div>
+    
+    <div *ngIf="isLoading" class="loading-state">
+      <p>Loading statistics...</p>
+    </div>
+    <div *ngIf="error" class="error-state">
+      <p>{{ error }}</p>
     </div>
   `,
   styles: [`
@@ -139,13 +147,35 @@ import { CommonModule } from '@angular/common';
       font-weight: 700;
       color: #0f172a;
     }
+    
+    .loading-state, .error-state {
+      padding: 2rem;
+      text-align: center;
+      color: #64748b;
+    }
+    .error-state {
+      color: #ef4444;
+    }
   `]
 })
 export class DashboardComponent implements OnInit {
-  // In a real app, these would be fetched from the backend via a DashboardService
+  stats: DashboardStats | null = null;
+  isLoading = true;
+  error = '';
   
-  constructor() {}
+  constructor(private statsService: StatsService) {}
   
   ngOnInit(): void {
+    this.statsService.getDashboardStats().subscribe({
+      next: (res) => {
+        this.stats = res.data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load stats', err);
+        this.error = 'Failed to load dashboard statistics.';
+        this.isLoading = false;
+      }
+    });
   }
 }
