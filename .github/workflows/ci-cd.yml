@@ -112,10 +112,10 @@ jobs:
             git pull origin main
 
             echo "Building Docker images on EC2..."
-            sudo docker compose build --no-cache backend
+            sudo docker compose build --no-cache
 
             echo "Restarting containers..."
-            sudo docker compose up -d db backend
+            sudo docker compose up -d
 
             echo "Cleaning up old Docker images..."
             sudo docker image prune -f
