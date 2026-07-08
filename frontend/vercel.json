@@ -1,9 +1,12 @@
 {
-  "buildCommand": "npx ng build --configuration=production",
-  "outputDirectory": "dist/frontend/browser",
-  "installCommand": "npm ci",
-  "framework": null,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/:match*",
+      "destination": "http://15.207.84.178:3000/api/:match*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
