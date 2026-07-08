@@ -6,7 +6,7 @@ This repository contains a full-stack CRUD application built with Angular 18 (st
 
 - `/frontend`: Angular 18 application (standalone components, strictly typed).
 - `/backend`: Node.js Express API (plain JS).
-- `/postman`: Postman collection for testing the API.
+- `augmont_postman_collection.json`: Postman collection for testing the API.
 
 ## Design Decisions
 
@@ -50,5 +50,16 @@ npm test
 - **Auth:** JWT-based login and registration.
 - **Categories:** Full CRUD. Deleting a category with associated products is blocked.
 - **Products:** Full CRUD with image upload via `multer`.
-- **Bulk Upload:** Async CSV/Excel product upload with background processing and polling.
-- **Reports:** Streaming CSV and XLSX report generation with O(1) memory footprint.
+- **Bulk Upload:** Async CSV/Excel product upload with background processing and polling (avoids 504 Gateway Timeouts).
+- **Reports:** Streaming CSV and XLSX report generation with O(1) memory footprint (avoids 504 Gateway Timeouts).
+
+## API Testing (Postman)
+
+A Postman collection is included in the root directory: `augmont_postman_collection.json`.
+
+**How to use:**
+1. Open Postman.
+2. Click **Import** (top left).
+3. Select the `augmont_postman_collection.json` file.
+4. The collection is pre-configured with variables. 
+5. Run the **Register** or **Login** endpoint first. It will automatically save your Auth Token, allowing you to test the protected Category and Product endpoints without manually copying the token!
